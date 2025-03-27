@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LETTERUN</title>
+  <link rel="stylesheet" href="styles/style.css">
+  <link rel="apple-touch-icon" href="images/icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="LETTERUN">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="icon" type="image/png" sizes="192x192" href="images/icon.png">
+  <link rel="manifest" href="manifest.json">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>LETTERUN</h1>
+      <p class="subtitle">Il gioco delle parole in velocità!</p>
+      <p class="tagline">🔥 SCUOTI, TROVA, VINCI! 🔥<br>🔤 Preparati a mettere alla prova la tua velocità mentale! 💡⏳</p>
+    </header>
+
+    <!-- Pulsante per mostrare/nascondere le regole -->
+    <button id="toggle-rules-button">🎮 Come si gioca?</button>
+
+    <!-- Sezione Regole -->
+    <section id="rules-section" class="hidden">
+      <h2>🎮 COME SI GIOCA?</h2>
+      <p>1️⃣ L’app genera 9 lettere casuali.</p>
+      <p>2️⃣ Hai un tempo limitato (da 30 secondi a 2 minuti) per trovare più parole possibili usando solo quelle lettere.</p>
+      <p>3️⃣ Ogni lettera può essere usata una sola volta per parola, ma puoi usarla per parole diverse.</p>
+      <p>4️⃣ Quando il tempo finisce, ogni giocatore inserisce le proprie parole e l’app calcola il punteggio.</p>
+
+      <hr>
+
+      <h3>📏 REGOLE PER LE PAROLE</h3>
+      <ul>
+        <li>✔️ Le parole devono avere almeno 3 lettere.</li>
+        <li>✔️ Sono valide solo parole italiane corrette.</li>
+        <li>✔️ Non valgono nomi propri, sigle o abbreviazioni.</li>
+        <li>✔️ Se due giocatori scrivono la stessa parola, l’app la elimina automaticamente.</li>
+      </ul>
+
+      <hr>
+
+      <h3>🏅 COME SI CALCOLA IL PUNTEGGIO?</h3>
+      <ul>
+        <li>🔹 3 lettere → 1 punto</li>
+        <li>🔹 4 lettere → 2 punti</li>
+        <li>🔹 5 lettere → 3 punti</li>
+        <li>🔹 6 o più lettere → 5 punti</li>
+        <li>✨ Bonus speciali:</li>
+        <ul>
+          <li>🌟 Parola rara (meno comune) → +2 punti</li>
+          <li>💎 Parola che usa tutte le lettere → +10 punti</li>
+        </ul>
+      </ul>
+
+      <hr>
+
+      <h3>🎯 MODALITÀ DI GIOCO</h3>
+      <ul>
+        <li>🌀 <strong>CLASSICA</strong> – Dopo ogni turno, l’app mostra i punteggi. Il giocatore con più punti alla fine della partita vince.</li>
+        <li>⚡ <strong>A PUNTEGGIO</strong> – Vince il primo che raggiunge 50 punti.</li>
+        <li>⏳ <strong>A TEMPO</strong> – Gioca per un numero prestabilito di round e scopri il campione!</li>
+      </ul>
+    </section>
+
+    <main>
+      <!-- Schermata delle impostazioni -->
+      <section class="settings">
+        <h2>Impostazioni di gioco</h2>
+        <label for="time-select">⏳ Tempo di gioco:</label>
+        <select id="time-select">
+          <option value="30">30 secondi</option>
+          <option value="60">1 minuto</option>
+          <option value="120">2 minuti</option>
+        </select>
+
+        <label for="players-select">👥 Numero di giocatori:</label>
+        <input type="number" id="players-select" min="2" placeholder="2 o più" required>
+        <button id="start-button">Inizia il gioco</button>
+      </section>
+
+      <!-- Schermata di gioco -->
+      <section id="game-screen" class="hidden">
+        <h2>Trova più parole possibili!</h2>
+        <div id="letters-container"></div>
+        <p id="timer">⏳ Tempo rimasto: <span id="time-left"></span></p>
+      </section>
+
+      <!-- Schermata di inserimento parole -->
+      <section id="word-input-screen" class="hidden">
+        <h2>Inserisci le parole trovate</h2>
+        <p>🔤 Lettere generate: <span id="generated-letters-display-input"></span></p>
+        <div id="player-words-container"></div>
+        <button id="calculate-scores-button">Calcola i punteggi</button>
+      </section>
+
+      <!-- Schermata dei risultati -->
+      <section id="results-screen" class="hidden">
+        <h2>Risultati del turno</h2>
+        <p>🔤 Lettere generate: <span id="generated-letters-display"></span></p>
+        <div id="results-container"></div>
+        <button id="restart-button">Ricomincia</button>
+      </section>
+    </main>
+
+    <footer>
+      <p>© 2025 LETTERUN. Tutti i diritti riservati.</p> 
+    </footer>
+  </div>
+
+  <button id="install-button" style="display: none;">📲 Installa LETTERUN</button>
+
+  <script src="scripts/main.js"></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("./service-worker.js")
+        .then((registration) => {
+          console.log("Service Worker registrato con successo:", registration);
+        })
+        .catch((error) => {
+          console.log("Service Worker registrazione fallita:", error);
+        });
+    }
+
+    let deferredPrompt;
+
+    window.addEventListener("beforeinstallprompt", (e) => {
+      // Previeni la visualizzazione automatica del prompt
+      e.preventDefault();
+      deferredPrompt = e;
+      // Mostra il pulsante di installazione
+      const installButton = document.getElementById("install-button");
+      installButton.style.display = "block";
+
+      installButton.addEventListener("click", () => {
+        // Mostra il prompt di installazione
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === "accepted") {
+            console.log("Utente ha accettato l'installazione");
+          } else {
+            console.log("Utente ha rifiutato l'installazione");
+          }
+          deferredPrompt = null;
+        });
+      });
+    });
+
+    // Nascondi il pulsante se l'app è già installata
+    window.addEventListener("appinstalled", () => {
+      console.log("LETTERUN è stata installata!");
+      document.getElementById("install-button").style.display = "none";
+    });
+  </script>
+</body>
+</html>
