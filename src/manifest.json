@@ -2,7 +2,7 @@
   "name": "LETTERUN",
   "short_name": "LETTERUN",
   "description": "Il gioco delle parole in velocità!",
-  "start_url": "./index.html",
+  "start_url": "/letterun/index.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#ffffff",
