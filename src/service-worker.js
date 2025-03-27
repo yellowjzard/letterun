@@ -1,35 +1,18 @@
 const CACHE_NAME = "letterun-cache-v1";
 const urlsToCache = [
-  "./",
-  "./index.html",
-  "./styles/style.css",
-  "./scripts/main.js",
-  "./images/icon.png",
-  "./manifest.json"
+  "/letterun/",
+  "/letterun/index.html",
+  "/letterun/styles/style.css",
+  "/letterun/scripts/main.js",
+  "/letterun/images/icon.png",
+  "/letterun/manifest.json"
 ];
 
 // Installazione del Service Worker
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      console.log("Caching files...");
       return cache.addAll(urlsToCache);
-    })
-  );
-});
-
-// Attivazione del Service Worker
-self.addEventListener("activate", (event) => {
-  event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cache) => {
-          if (cache !== CACHE_NAME) {
-            console.log("Deleting old cache:", cache);
-            return caches.delete(cache);
-          }
-        })
-      );
     })
   );
 });
